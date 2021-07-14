@@ -229,4 +229,62 @@ file.None.0xfffffa801a939ad0.img:  PE32+ executable (console) x86-64, for MS Win
 file.None.0xfffffa801ae39e20.dat:  data
 ```
 
+Proceed to reverse-engineer the PE32+ Executables leads to a simple algorithm:
 
+<img src="images/povrev.png" />
+
+We can see that `ezcached` is referenced in there which means it has something to do with FILE Handling, so we can assume that 
+`sub_419C58()` function is `fopen()`. And the next one shall be `fprintf` or could be `fputs`. Looks like it's just a very
+simple keylogs style and when the victim types, it'll be xorred by 2.
+We can recover the original content of `ezcached` by xorring it by 2. The `ezcached` file should be the `file.None.0xfffffa801ae39e20.dat`,
+we can just rename it.
+
+```python
+with open("ezcached","r") as x:
+	f = x.read()
+
+flag_1 = ""
+for i in f:
+	flag_1 += chr(ord(i) ^ 2)
+
+print(flag_1)
+#Output = RTL{1ntern4l_ACT_
+```
+
+We got our first flag and we can assume that it's the password that was retrieved by the fraud (according to the challenge and cmd).
+Next one, we can find the remote activity of RDP that has been done by the fraud, and the ways to analyze and dump the activity is by
+dumping the `.bmc` and `Cache*.bin` files located in `%LOCALAPPDATA%/Microsoft/Terminal Server Client/Cache`.
+We know that the fraud copied the Microsoft Folders so we can just dump the files (which also has been zipped).
+
+```
+python vol.py -f /home/kali/Desktop/RTL-ASENG-PC-20210714-023616.raw --profile=Win7SP1x64 filescan | grep 'zip'                                                                                           130 ⨯
+Volatility Foundation Volatility Framework 2.6.1
+0x000000007dc13a70     16      0 R--r-d \Device\HarddiskVolume2\Windows\System32\en-US\zipfldr.dll.mui
+0x000000007dc29c30      1      1 R--r-d \Device\HarddiskVolume2\Windows\System32\en-US\zipfldr.dll.mui
+0x000000007de5e850      1      1 R--r-- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Terminal Server Client.zip
+0x000000007de88530     12      0 R--r-d \Device\HarddiskVolume2\Windows\System32\zipfldr.dll
+0x000000007debc6d0      1      0 R--r-- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Terminal Server Client.zip
+0x000000007df07070     16      0 -W-r-- \Device\HarddiskVolume2\Program Files\WinArchiver\zipnew.dat
+0x000000007df0e8c0      2      0 RW---- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Windows Media.zip6
+0x000000007dfe23b0     16      0 RW---- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Windows.zipKa02136
+0x000000007e798070      2      0 -W---- \Device\HarddiskVolume2\$Recycle.Bin\S-1-5-21-1959527227-695848696-469335903-1001\$I03MHT7.zip
+0x000000007e7fe580     16      0 RW---- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Windows Mail.zip44
+0x000000007fc40cf0      2      0 RW---- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Feeds.zip\BNa03600
+
+sudo python vol.py -f /home/kali/Desktop/RTL-ASENG-PC-20210714-023616.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000007de5e850 -D output-RTL
+Volatility Foundation Volatility Framework 2.6.1
+DataSectionObject 0x7de5e850   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Terminal Server Client.zip
+SharedCacheMap 0x7de5e850   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\Terminal Server Client.zip
+```
+The zipped files contains the `.bmc` files. We can convert `.bmc` to bitmaps using `bmc-parser` tools that can be retrieved from here:
+https://github.com/ANSSI-FR/bmc-tools
+
+Use the bmc-parser.py with `-s` argument for the `.bmc` file and `-d` as the destination otuput bitmap folder.
+As a result, it'll generate approximately 100+ bitmaps and you can see there's some activity where the fraud opens up an 
+image containing the second flag.
+
+<img src="images/poc_bmc.png" />
+
+
+Finally we got our flag.
+`RTL{1ntern4l_ACT_c0mprom153d?_nyeh}`
