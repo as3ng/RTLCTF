@@ -34,6 +34,8 @@ https://github.com/volatilityfoundation/volatility
 I'd still strongly recommend to download Volatility 2 instead of Volatility 3 due to
 its several plugins limitations.
 
+# POC
+
 We can use `imageinfo` or `kdbgscan` plugin in order to retrieve the OS Profile of the challenge.
 The OS profile turns out to be Windows 7 SP1.
 
@@ -191,3 +193,40 @@ internal computer. Also, the fraud copied all the Microsoft Folders to `mess up`
 Obviously according to the challenge's description, the fraud is the insider of the company.
 He also then tried to connect to some of internal computer's **remotely**. We can assume from the
 cmd-line, the fraud was going to do a **Remote Desktop Connection**.
+
+We can now proceed to dump the `svchosts.exe` and `ezcached` to be analyzed.
+First, we need to find the matching patterns of the filenames.
+```
+python vol.py -f /home/kali/Desktop/RTL-ASENG-PC-20210714-023616.raw --profile=Win7SP1x64 filescan | grep -P '(svchosts.exe|ezcached)'                                                                      1 ⨯
+Volatility Foundation Volatility Framework 2.6.1
+0x000000007dc4d870     13      0 R--r-d \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\svchosts.exe
+0x000000007deeef20      6      0 R--r-d \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\svchosts.exe
+0x000000007e179c80      2      1 RW-rw- \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\ezcached
+0x000000007e1a4780      1      0 R--rwd \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\svchosts.exe
+0x000000007e1bad00     16      0 R--rwd \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\ezcached
+```
+
+The left part is the offset in hex so we can specify them while dumping the file and specifying the target directory which will
+contain our dumped file. In my case, `output-RTL`.
+
+```
+sudo mkdir output-RTL && sudo python vol.py -f /home/kali/Desktop/RTL-ASENG-PC-20210714-023616.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000007dc4d870 -D output-RTL
+Volatility Foundation Volatility Framework 2.6.1
+ImageSectionObject 0x7dc4d870   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\svchosts.exe
+DataSectionObject 0x7dc4d870   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\svchosts.exe
+
+sudo python vol.py -f /home/kali/Desktop/RTL-ASENG-PC-20210714-023616.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000007e179c80 -D output-RTL       
+Volatility Foundation Volatility Framework 2.6.1
+DataSectionObject 0x7e179c80   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\ezcached
+SharedCacheMap 0x7e179c80   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Desktop\ezcached
+```
+The dumped file will have a format like `file.*`, it's normal. We can determine the filetype of the dumped files too easily.
+
+```
+file *
+file.None.0xfffffa801a96e010.vacb: data
+file.None.0xfffffa801a939ad0.img:  PE32+ executable (console) x86-64, for MS Windows
+file.None.0xfffffa801ae39e20.dat:  data
+```
+
+
