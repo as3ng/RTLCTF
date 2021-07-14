@@ -34,6 +34,6 @@ https://github.com/volatilityfoundation/volatility
 I'd still strongly recommend to download Volatility 2 instead of Volatility 3 due to
 its several plugins limitations.
 
-We can use `imageinfo` or `kdbgscan` in order to retrieve the OS Profile of the challenge.
+We can use `imageinfo` or `kdbgscan` plugin in order to retrieve the OS Profile of the challenge.
 
 
