@@ -80,3 +80,4 @@ which contains the flag.
 <img src="images/final.png" />
 
 
+`Flag: RTL{IHDR_chunk_m4nipulat10n}`
