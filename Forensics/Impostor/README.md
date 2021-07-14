@@ -37,3 +37,14 @@ its several plugins limitations.
 We can use `imageinfo` or `kdbgscan` plugin in order to retrieve the OS Profile of the challenge.
 
 
+
+You can also refer to these Windows KDBG Magic Values.
+
+| Operating System | KDBG Magic Values |
+| ---------------- | ------------------|
+| Windows XP | 00 00 00 00 00 00 00 00 4b 44 42 47 90 02 |
+| Windows Server 2003 | 00 00 00 00 00 00 00 00 4b 44 42 47 18 03 |
+| Windows Vista SP0 | 00 00 00 00 00 00 00 00 4b 44 42 47 28 03 |
+| Windows Vista SP1 | 00 00 00 00 00 00 00 00 4b 44 42 47 30 03 |
+| Windows Server 2008 | 00 00 00 00 00 00 00 00 4b 44 42 47 40 03 |
+| Windows 7 | 00 00 00 00 00 00 00 00 4b 44 42 47 40 03 |
