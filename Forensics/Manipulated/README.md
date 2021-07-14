@@ -75,6 +75,8 @@ Height :0x26e #Should be \x00\x00\x02\x6e
 We can alter the manipulated bytes by the correct bytes in Hex Editor and we'll get the correct picture
 which contains the flag.
 
+<img src="images/poc4.png" />
 
+<img src="images/final.png" />
 
 
