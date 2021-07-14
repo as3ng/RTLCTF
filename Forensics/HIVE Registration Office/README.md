@@ -63,11 +63,11 @@ We can go to the SYSTEM Registry.
 
 <img src="images/poc4.png" />
 
-The second question's answer shall be HP, as we know that this laptop is HP Pavilion.
+The second question's answer shall be `HP`, as we know that this laptop is HP Pavilion.
 
 <img src="images/poc5.png"/>
 
-The third one should be Insyde, as it's the BIOS Vendor.
+The third one should be `Insyde`, as it's the BIOS Vendor.
 
 Last question's information can be retrieved in SAM Registry again and it's still in the same folder.
 USER has logged on for `2817` times.
