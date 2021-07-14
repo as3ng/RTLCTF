@@ -43,7 +43,8 @@ After downloaded, you can pass all the registry to the tools.
 
 <img src="images/poc1.png" />
 
-** When was the last time this person changed his/her password? **
+
+**When was the last time this person changed his/her password?**
 The first question is related to Windows Account Information and it's related to
 Windows Security Account Manager (SAM Registry). It's located on the Account Folder
 where the Users Information can be retrieved, in this case, USER.
@@ -57,8 +58,11 @@ It's in the `Last Password Change` column.
 So we know that the last time USER changed his password is `15:54:49 2020/04/19`.
 
 Moving on to the next two questions can be retrieved in the same registry.
-** What is the manufacturer's name of this USER's laptop? **
-** What is the BIOS Vendor's Name? **
+
+**What is the manufacturer's name of this USER's laptop?**
+<br>
+
+**What is the BIOS Vendor's Name?**
 
 We can go to the SYSTEM Registry.
 
