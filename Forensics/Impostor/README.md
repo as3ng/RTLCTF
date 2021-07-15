@@ -279,7 +279,7 @@ SharedCacheMap 0x7de5e850   None   \Device\HarddiskVolume2\Users\RTL-ASENG\Deskt
 The zipped files contains the `.bmc` files. We can convert `.bmc` to bitmaps using `bmc-parser` tools that can be retrieved from here:
 https://github.com/ANSSI-FR/bmc-tools
 
-Use the bmc-parser.py with `-s` argument for the `.bmc` file and `-d` as the destination otuput bitmap folder.
+Use the bmc-parser.py with `-s` argument for the `.bmc` file and `-d` as the destination output bitmap folder.
 As a result, it'll generate approximately 100+ bitmaps and you can see there's some activity where the fraud opens up an 
 image containing the second flag.
 
